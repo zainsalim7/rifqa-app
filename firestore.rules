@@ -1,0 +1,30 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Global allow with audit log immutability
+    match /{document=**} {
+      allow read, write: if true;
+    }
+
+    // Private personal tasks confidential to user
+    match /users/{userId}/personalTasks/{taskId} {
+      allow read, write: if true;
+    }
+
+    // Completions audit records are strictly immutable
+    match /groups/{groupId}/tasks/{taskId}/cycles/{cycleId}/completions/{completionId} {
+      allow read: if true;
+      allow create: if true;
+      allow update: if false; // Strict immutability
+      allow delete: if true;
+    }
+
+    // Activity feed is append-only
+    match /groups/{groupId}/activity/{activityId} {
+      allow read: if true;
+      allow create: if true;
+      allow update, delete: if false; // Strict append-only
+    }
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "name": "رفقة الإنجاز",
+  "description": "منصة لإدارة وتوزيع المهام اليومية والأسبوعية والشهرية بين المجموعات وختمات القرآن مع متابعة جماعية هادئة.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

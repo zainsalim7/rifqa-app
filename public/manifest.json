@@ -1,0 +1,19 @@
+{
+  "name": "رفقة الإنجاز",
+  "short_name": "رفقة الإنجاز",
+  "description": "منصة لإدارة وتوزيع المهام الجماعية والأوراد والختمات",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#064e3b",
+  "theme_color": "#064e3b",
+  "dir": "rtl",
+  "lang": "ar",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

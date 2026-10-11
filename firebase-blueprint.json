@@ -1,0 +1,278 @@
+{
+  "entities": {
+    "userProfile": {
+      "title": "UserProfile",
+      "description": "User profile information and preferences",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "maxLength": 128 },
+        "displayName": { "type": "string", "maxLength": 100 },
+        "email": { "type": "string", "maxLength": 200 },
+        "photoURL": { "type": "string", "maxLength": 500 },
+        "reminderEnabled": { "type": "boolean" },
+        "reminderTime": { "type": "string", "maxLength": 10 },
+        "dailyUncompletedReminderEnabled": { "type": "boolean" },
+        "dailyUncompletedReminderTime": { "type": "string", "maxLength": 10 },
+        "reminderSoundEnabled": { "type": "boolean" },
+        "lastReminderSentDate": { "type": "string", "maxLength": 30 },
+        "dependents": { "type": "array" },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["uid", "displayName"]
+    },
+    "group": {
+      "title": "Group",
+      "description": "A group of participants sharing tasks",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "name": { "type": "string", "maxLength": 100 },
+        "description": { "type": "string", "maxLength": 500 },
+        "createdBy": { "type": "string", "maxLength": 128 },
+        "isDemo": { "type": "boolean" },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["name", "createdBy"]
+    },
+    "groupMember": {
+      "title": "GroupMember",
+      "description": "Member association within a group",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "maxLength": 128 },
+        "displayName": { "type": "string", "maxLength": 100 },
+        "email": { "type": "string", "maxLength": 200 },
+        "role": { "type": "string", "enum": ["admin", "member"] },
+        "isDependent": { "type": "boolean" },
+        "parentUserId": { "type": "string", "maxLength": 128 },
+        "parentDisplayName": { "type": "string", "maxLength": 100 },
+        "relationship": { "type": "string", "maxLength": 50 },
+        "avatar": { "type": "string", "maxLength": 50 },
+        "joinedAt": { "type": "string" }
+      },
+      "required": ["userId", "displayName", "role"]
+    },
+    "invitation": {
+      "title": "Invitation",
+      "description": "Invitation code to join a group",
+      "type": "object",
+      "properties": {
+        "code": { "type": "string", "maxLength": 32 },
+        "groupId": { "type": "string", "maxLength": 128 },
+        "groupName": { "type": "string", "maxLength": 100 },
+        "createdBy": { "type": "string", "maxLength": 128 },
+        "active": { "type": "boolean" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["code", "groupId", "active"]
+    },
+    "task": {
+      "title": "Task",
+      "description": "A task definition created within a group",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "groupId": { "type": "string", "maxLength": 128 },
+        "name": { "type": "string", "maxLength": 150 },
+        "instructions": { "type": "string", "maxLength": 1000 },
+        "taskType": { "type": "string", "enum": ["distributed", "individual", "shared_target"] },
+        "recurrence": { "type": "string", "enum": ["daily", "weekly", "monthly", "once"] },
+        "targetTotal": { "type": "number" },
+        "unitTemplate": { "type": "string", "maxLength": 50 },
+        "unitCount": { "type": "number" },
+        "showNamesOnCompletion": { "type": "boolean" },
+        "reminderTime": { "type": "string", "maxLength": 10 },
+        "currentCycleNumber": { "type": "number" },
+        "status": { "type": "string", "enum": ["active", "archived"] },
+        "createdBy": { "type": "string", "maxLength": 128 },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["name", "taskType", "recurrence", "createdBy"]
+    },
+    "taskCycle": {
+      "title": "TaskCycle",
+      "description": "A recurrence cycle of a task",
+      "type": "object",
+      "properties": {
+        "cycleNumber": { "type": "number" },
+        "taskId": { "type": "string", "maxLength": 128 },
+        "groupId": { "type": "string", "maxLength": 128 },
+        "startDate": { "type": "string", "maxLength": 50 },
+        "endDate": { "type": "string", "maxLength": 50 },
+        "status": { "type": "string", "enum": ["active", "completed"] },
+        "totalUnits": { "type": "number" },
+        "completedUnits": { "type": "number" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["cycleNumber", "taskId", "status"]
+    },
+    "taskAssignment": {
+      "title": "TaskAssignment",
+      "description": "An assignment of a unit in a cycle to a user",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "taskId": { "type": "string", "maxLength": 128 },
+        "cycleNumber": { "type": "number" },
+        "unitNumber": { "type": "number" },
+        "unitTitle": { "type": "string", "maxLength": 100 },
+        "assignedToUserId": { "type": "string", "maxLength": 128 },
+        "assignedToName": { "type": "string", "maxLength": 100 },
+        "isDependent": { "type": "boolean" },
+        "parentUserId": { "type": "string", "maxLength": 128 },
+        "parentDisplayName": { "type": "string", "maxLength": 100 },
+        "status": { "type": "string", "enum": ["not_started", "in_progress", "completed", "excused"] },
+        "completedAt": { "type": "string", "maxLength": 50 },
+        "notes": { "type": "string", "maxLength": 500 },
+        "excusedReason": { "type": "string", "maxLength": 300 },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["unitNumber", "assignedToUserId", "status"]
+    },
+    "completionRecord": {
+      "title": "CompletionRecord",
+      "description": "Audit log record of a completed unit",
+      "type": "object",
+      "properties": {
+        "taskId": { "type": "string", "maxLength": 128 },
+        "cycleNumber": { "type": "number" },
+        "unitNumber": { "type": "number" },
+        "userId": { "type": "string", "maxLength": 128 },
+        "userName": { "type": "string", "maxLength": 100 },
+        "isDependent": { "type": "boolean" },
+        "parentUserId": { "type": "string", "maxLength": 128 },
+        "parentDisplayName": { "type": "string", "maxLength": 100 },
+        "completedAt": { "type": "string", "maxLength": 50 },
+        "notes": { "type": "string", "maxLength": 500 }
+      },
+      "required": ["taskId", "userId", "completedAt"]
+    },
+    "swapRequest": {
+      "title": "SwapRequest",
+      "description": "Request by a member to swap assigned units",
+      "type": "object",
+      "properties": {
+        "taskId": { "type": "string", "maxLength": 128 },
+        "cycleId": { "type": "string", "maxLength": 128 },
+        "requesterUserId": { "type": "string", "maxLength": 128 },
+        "requesterName": { "type": "string", "maxLength": 100 },
+        "requesterUnit": { "type": "number" },
+        "targetUserId": { "type": "string", "maxLength": 128 },
+        "targetName": { "type": "string", "maxLength": 100 },
+        "targetUnit": { "type": "number" },
+        "status": { "type": "string", "enum": ["pending", "accepted", "rejected", "cancelled"] },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["taskId", "requesterUserId", "targetUserId", "status"]
+    },
+    "activityRecord": {
+      "title": "ActivityRecord",
+      "description": "Activity log entry for a group",
+      "type": "object",
+      "properties": {
+        "groupId": { "type": "string", "maxLength": 128 },
+        "type": { "type": "string", "enum": ["completed", "undo", "excused", "swap", "member_joined", "member_removed", "cycle_rotated", "task_created"] },
+        "actorId": { "type": "string", "maxLength": 128 },
+        "actorName": { "type": "string", "maxLength": 100 },
+        "description": { "type": "string", "maxLength": 500 },
+        "timestamp": { "type": "string" }
+      },
+      "required": ["groupId", "type", "actorId", "description"]
+    },
+    "userBadge": {
+      "title": "UserBadge",
+      "description": "Badge awarded to a user",
+      "type": "object",
+      "properties": {
+        "badgeId": { "type": "string", "maxLength": 50 },
+        "title": { "type": "string", "maxLength": 100 },
+        "description": { "type": "string", "maxLength": 300 },
+        "icon": { "type": "string", "maxLength": 50 },
+        "awardedAt": { "type": "string" },
+        "relatedRecordId": { "type": "string", "maxLength": 128 }
+      },
+      "required": ["badgeId", "title", "awardedAt"]
+    },
+    "personalTask": {
+      "title": "PersonalTask",
+      "description": "Private personal task or program completely confidential to the user",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "userId": { "type": "string", "maxLength": 128 },
+        "title": { "type": "string", "maxLength": 150 },
+        "category": { "type": "string", "enum": ["khatmah", "dhikr", "wird", "custom"] },
+        "description": { "type": "string", "maxLength": 1000 },
+        "targetCount": { "type": "number" },
+        "currentCount": { "type": "number" },
+        "targetDate": { "type": "string", "maxLength": 50 },
+        "targetTime": { "type": "string", "maxLength": 10 },
+        "reminderEnabled": { "type": "boolean" },
+        "reminderTime": { "type": "string", "maxLength": 10 },
+        "reminderSoundEnabled": { "type": "boolean" },
+        "frequency": { "type": "string", "enum": ["daily", "weekly", "specific_date", "open"] },
+        "completedUnits": { "type": "array" },
+        "totalUnits": { "type": "number" },
+        "isCompleted": { "type": "boolean" },
+        "completedAt": { "type": "string", "maxLength": 50 },
+        "streakDays": { "type": "number" },
+        "lastCompletedDate": { "type": "string", "maxLength": 50 },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["userId", "title", "category", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "userProfile" },
+      "description": "User profile document"
+    },
+    "/users/{userId}/personalTasks/{taskId}": {
+      "schema": { "$ref": "personalTask" },
+      "description": "Private personal tasks confidential to the user"
+    },
+    "/users/{userId}/badges/{badgeId}": {
+      "schema": { "$ref": "userBadge" },
+      "description": "Badges earned by user"
+    },
+    "/groups/{groupId}": {
+      "schema": { "$ref": "group" },
+      "description": "Groups for shared tasks"
+    },
+    "/groups/{groupId}/members/{userId}": {
+      "schema": { "$ref": "groupMember" },
+      "description": "Members of a specific group"
+    },
+    "/invitations/{code}": {
+      "schema": { "$ref": "invitation" },
+      "description": "Group invitation codes"
+    },
+    "/groups/{groupId}/tasks/{taskId}": {
+      "schema": { "$ref": "task" },
+      "description": "Tasks belonging to a group"
+    },
+    "/groups/{groupId}/tasks/{taskId}/cycles/{cycleId}": {
+      "schema": { "$ref": "taskCycle" },
+      "description": "Recurrence cycle of a task"
+    },
+    "/groups/{groupId}/tasks/{taskId}/cycles/{cycleId}/assignments/{assignmentId}": {
+      "schema": { "$ref": "taskAssignment" },
+      "description": "Task assignments in a cycle"
+    },
+    "/groups/{groupId}/tasks/{taskId}/cycles/{cycleId}/completions/{completionId}": {
+      "schema": { "$ref": "completionRecord" },
+      "description": "Completion log of a cycle"
+    },
+    "/groups/{groupId}/swapRequests/{swapId}": {
+      "schema": { "$ref": "swapRequest" },
+      "description": "Swap requests between members"
+    },
+    "/groups/{groupId}/activity/{activityId}": {
+      "schema": { "$ref": "activityRecord" },
+      "description": "Audit history and activity feed of a group"
+    }
+  }
+}
