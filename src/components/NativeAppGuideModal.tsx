@@ -27,8 +27,10 @@ interface NativeAppGuideModalProps {
 
 export const NativeAppGuideModal: React.FC<NativeAppGuideModalProps> = ({ onClose }) => {
   const { showToast } = useToast();
-  const [activeTab, setActiveTab] = useState<'android' | 'ios' | 'github' | 'actions' | 'fcm'>('android');
+  const [activeTab, setActiveTab] = useState<'android' | 'ios' | 'github' | 'actions' | 'fcm'>('github');
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
+  const [githubUser, setGithubUser] = useState<string>('');
+  const [githubRepo, setGithubRepo] = useState<string>('rifqa-app');
 
   const copyToClipboard = (text: string, keyName: string) => {
     navigator.clipboard.writeText(text);
@@ -37,17 +39,20 @@ export const NativeAppGuideModal: React.FC<NativeAppGuideModalProps> = ({ onClos
     setTimeout(() => setCopiedKey(null), 2500);
   };
 
-  const gitCommands = `# 1. فتح مجلد المشروع ثم التحقق من الملفات
-git add .
-git commit -m "إطلاق تطبيق رفقة الإنجاز لنظامي أندرويد وiOS"
+  const usernamePlaceholder = githubUser.trim() || 'YOUR_USERNAME';
+  const repoPlaceholder = githubRepo.trim() || 'rifqa-app';
 
-# 2. ربط المستودع بمستودعك الجديد على GitHub
-# (استبدل YOUR-USERNAME باسم حسابك في GitHub)
-git remote add origin https://github.com/YOUR-USERNAME/rifqa-app.git
+  const gitCommands = `# 1. ربط هذا المستودع بمستودعك الجديد على GitHub
+git remote add origin https://github.com/${usernamePlaceholder}/${repoPlaceholder}.git
 
-# 3. رفع المشروع بالكامل
+# 2. تعيين الفرع الرئيسي
 git branch -M main
+
+# 3. رفع كافة الملفات وتاريخ الالتزام إلى GitHub
 git push -u origin main`;
+
+  const gitCliCommands = `# أو يمكنك إنشاء المستودع ورفعه مباشرة بأمر واحد عبر GitHub CLI:
+gh repo create ${repoPlaceholder} --public --source=. --remote=origin --push`;
 
   const androidBuildCommands = `# 1. تثبيت الحزم (إذا لزم)
 npm install
@@ -302,10 +307,10 @@ npm run cap:ios`;
               <div className="space-y-4">
                 <h4 className="font-bold text-stone-900 text-sm flex items-center gap-2">
                   <span className="w-6 h-6 rounded-full bg-purple-800 text-white flex items-center justify-center text-xs">1</span>
-                  أنشئ مستودعاً جديداً على حسابك في GitHub:
+                  إنشاء مستودع جديد على حسابك في GitHub:
                 </h4>
                 <p className="text-xs text-stone-600 pr-8">
-                  افتح موقع GitHub وأنشئ مستودعاً جديداً (New Repository) وسمّه مثلاً <code>rifqa-app</code> (اجعله عاماً Public أو خاصاً Private حسب رغبتك).
+                  افتح موقع GitHub وأنشئ مستودعاً جديداً (New Repository) فارغاً دون إضافة README أو .gitignore (لأننا جهزناها لك بالفعل).
                 </p>
                 <div className="pr-8">
                   <a
@@ -319,9 +324,45 @@ npm run cap:ios`;
                   </a>
                 </div>
 
+                {/* Input Fields to Customize Commands */}
+                <div className="mr-8 bg-purple-50/70 border border-purple-200/80 rounded-2xl p-4 space-y-3">
+                  <h5 className="text-xs font-bold text-purple-950 flex items-center gap-1.5">
+                    <Sparkles className="w-3.5 h-3.5 text-purple-700" />
+                    أدخل بيانات حسابك لتجهيز الأوامر المخصصة لك فوراً:
+                  </h5>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-[11px] font-semibold text-stone-700 mb-1">
+                        اسم حسابك على GitHub (Username):
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="مثال: AhmedDev"
+                        value={githubUser}
+                        onChange={(e) => setGithubUser(e.target.value)}
+                        className="w-full px-3 py-1.5 rounded-xl border border-purple-200 bg-white text-xs text-stone-900 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-purple-600 font-mono"
+                        dir="ltr"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-semibold text-stone-700 mb-1">
+                        اسم المستودع (Repository Name):
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="rifqa-app"
+                        value={githubRepo}
+                        onChange={(e) => setGithubRepo(e.target.value)}
+                        className="w-full px-3 py-1.5 rounded-xl border border-purple-200 bg-white text-xs text-stone-900 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-purple-600 font-mono"
+                        dir="ltr"
+                      />
+                    </div>
+                  </div>
+                </div>
+
                 <h4 className="font-bold text-stone-900 text-sm flex items-center gap-2 pt-2">
                   <span className="w-6 h-6 rounded-full bg-purple-800 text-white flex items-center justify-center text-xs">2</span>
-                  انسخ أوامر Git التالية ونفّذها في مجلد مشروعك:
+                  أوامر رفع الكود المباشرة (انسخها ونفّذها في مجلد مشروعك):
                 </h4>
                 <div className="mr-8 bg-stone-950 text-stone-200 p-4 rounded-2xl font-mono text-xs relative dir-ltr text-left">
                   <button
@@ -329,9 +370,28 @@ npm run cap:ios`;
                     className="absolute top-2.5 right-2.5 px-2.5 py-1 rounded-lg bg-stone-800 hover:bg-stone-700 text-stone-200 text-xs flex items-center gap-1 font-sans"
                   >
                     {copiedKey === 'cmd-git' ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
-                    نسخ الأوامر كاملة
+                    نسخ الأوامر
                   </button>
                   <pre className="whitespace-pre-wrap">{gitCommands}</pre>
+                </div>
+
+                <h4 className="font-bold text-stone-900 text-sm flex items-center gap-2 pt-2">
+                  <span className="w-6 h-6 rounded-full bg-purple-800 text-white flex items-center justify-center text-xs">3</span>
+                  ملاحظة هامة حول كلمة المرور (Personal Access Token):
+                </h4>
+                <div className="mr-8 bg-amber-50 border border-amber-200 rounded-2xl p-3.5 text-xs text-amber-950 space-y-1.5 leading-relaxed">
+                  <p className="font-bold flex items-center gap-1.5 text-amber-900">
+                    <AlertCircle className="w-4 h-4 text-amber-700 shrink-0" />
+                    إذا طلب منك Git كلمة المرور (Password):
+                  </p>
+                  <p className="text-amber-900/90">
+                    موقع GitHub لم يعد يقبل كلمة مرور الحساب العادية عند الدفع عبر سطر الأوامر، بل يتطلب <strong>Personal Access Token (PAT)</strong>:
+                  </p>
+                  <ol className="list-decimal list-inside space-y-1 text-amber-900/80 pr-2">
+                    <li>افتح GitHub &gt; إعدادات الحساب (Settings) &gt; <strong>Developer Settings</strong> في الأسفل.</li>
+                    <li>اختر <strong>Personal access tokens (classic)</strong> &gt; <strong>Generate new token</strong>.</li>
+                    <li>حدد صلاحية <strong>repo</strong> كاملة، ثم انسخ الرمز والصقه عندما يطلب منك Git كلمة المرور!</li>
+                  </ol>
                 </div>
 
                 <div className="mr-8 p-3.5 rounded-2xl bg-stone-50 border border-stone-200 text-xs space-y-1 text-stone-700">
@@ -340,7 +400,7 @@ npm run cap:ios`;
                     ماذا سيحدث بعد تنفيذ هذه الأوامر؟
                   </p>
                   <p className="text-stone-600">
-                    سيصبح الكود كاملاً مخزناً بأمان على حسابك في GitHub، مع تاريخ التغييرات ومشاريع أندرويد و iOS، ويمكنك فتح الكود في أي وقت ومشاركته مع فريقك.
+                    سيصبح الكود كاملاً مخزناً بأمان على حسابك في GitHub، مع تاريخ التغييرات ومشاريع أندرويد و iOS، كما سيبدأ GitHub Actions تلقائياً ببناء ملف الـ APK لك!
                   </p>
                 </div>
               </div>
