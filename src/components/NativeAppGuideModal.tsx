@@ -165,6 +165,34 @@ npm run cap:ios`;
         {/* Modal Body */}
         <div className="p-5 sm:p-6 overflow-y-auto space-y-6 flex-1 text-right text-stone-700 text-sm">
           
+          {/* Quick ZIP Download Banner */}
+          <div className="bg-gradient-to-r from-amber-50 via-orange-50 to-amber-50 border border-amber-200/90 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-xs">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-amber-600 text-white flex items-center justify-center shrink-0 shadow-sm">
+                <Download className="w-5 h-5" />
+              </div>
+              <div>
+                <h4 className="text-xs sm:text-sm font-bold text-amber-950 flex items-center gap-1.5">
+                  أين تجد مجلد المشروع في جهازك؟
+                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-200 text-amber-900 font-normal">
+                    تحميل مباشر
+                  </span>
+                </h4>
+                <p className="text-[11px] sm:text-xs text-amber-800/90 mt-0.5 leading-relaxed">
+                  المشروع يعمل حالياً على سيرفر Google السحابي. يمكنك تحميل المجلد كاملاً بضغطة زر كملف ZIP إلى مجلد <strong>التنزيلات (Downloads)</strong> في جهازك.
+                </p>
+              </div>
+            </div>
+            <a
+              href="/rifqa-app.zip"
+              download="rifqa-app.zip"
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-amber-700 hover:bg-amber-800 text-white text-xs font-bold transition-all shadow-sm shrink-0 w-full sm:w-auto justify-center"
+            >
+              <Download className="w-4 h-4" />
+              تحميل المجلد كاملاً (ZIP)
+            </a>
+          </div>
+
           {/* TAB 1: ANDROID APK */}
           {activeTab === 'android' && (
             <div className="space-y-5 animate-fade-in">
@@ -502,16 +530,26 @@ npm run cap:ios`;
         </div>
 
         {/* Modal Footer */}
-        <div className="p-4 sm:p-5 bg-stone-50 border-t border-stone-200 flex items-center justify-between">
+        <div className="p-4 sm:p-5 bg-stone-50 border-t border-stone-200 flex flex-wrap items-center justify-between gap-3">
           <div className="text-xs text-stone-500 font-medium">
             حزمة التطبيق المعتمدة: <code className="bg-stone-200 px-1.5 py-0.5 rounded text-stone-800 font-mono">com.rifqa.app</code>
           </div>
-          <button
-            onClick={onClose}
-            className="px-5 py-2.5 rounded-xl bg-emerald-800 hover:bg-emerald-700 text-white text-xs font-bold transition-all shadow-sm"
-          >
-            حسناً، فهمت ذلك
-          </button>
+          <div className="flex items-center gap-2">
+            <a
+              href="/rifqa-app.zip"
+              download="rifqa-app.zip"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs font-bold transition-all border border-stone-200"
+            >
+              <Download className="w-3.5 h-3.5 text-stone-500" />
+              تحميل الكود (ZIP)
+            </a>
+            <button
+              onClick={onClose}
+              className="px-5 py-2 rounded-xl bg-emerald-800 hover:bg-emerald-700 text-white text-xs font-bold transition-all shadow-sm"
+            >
+              حسناً، فهمت ذلك
+            </button>
+          </div>
         </div>
       </div>
     </div>

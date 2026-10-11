@@ -20,3 +20,6 @@ ios/App/Podfile.lock
 ios/App/build/
 ios/App/DerivedData/
 
+# Archives
+public/*.zip
+
