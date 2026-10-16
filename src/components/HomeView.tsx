@@ -280,7 +280,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
               <span>{personalTasks.length > 0 ? 'فتح ومتابعة الأوراد' : 'بدء برنامج خاص'}</span>
               <ChevronLeft className="w-3.5 h-3.5" />
             </button>
-        </div>
+          )}
 
         {/* Quick Preview of Active Personal Items if any */}
         {personalTasks.length > 0 && (

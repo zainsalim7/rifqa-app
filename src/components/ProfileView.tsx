@@ -47,6 +47,7 @@ const PRESET_TIMES = [
 interface ProfileViewProps {
 }
 
+export const ProfileView: React.FC<ProfileViewProps> = () => {
   const { currentUser, userProfile, updateUserProfile } = useAuth();
   const { assignments, tasks, myDependents } = useGroup();
   const { showToast } = useToast();
