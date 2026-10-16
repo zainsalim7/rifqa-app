@@ -499,4 +499,3 @@ export const GroupView: React.FC<GroupViewProps> = ({
           </div>
         </div>
       )
-}
