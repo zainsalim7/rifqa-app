@@ -563,7 +563,7 @@ export const ProfileView: React.FC<ProfileViewProps> = () => {
                   {unit.completedAt ? formatDateTimeInAden(unit.completedAt) : 'مكتمل'}
                 </span>
               </div>
-            )}
+            ))}
           </div>
     }
 };

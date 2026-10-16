@@ -336,7 +336,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                     </button>
                   )}
                 </div>
-              )};
+              )})
           </div>
     );
 };
