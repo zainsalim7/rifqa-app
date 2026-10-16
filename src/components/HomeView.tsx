@@ -336,9 +336,11 @@ export const HomeView: React.FC<HomeViewProps> = ({
                     </button>
                   )}
                 </div>
-              );
+              ))}
           </div>
-      </div>
+    );
+};
+
 
       {/* Pending Overdue Wards from Previous Cycles ("معلق في الذمة حتى ينجزه") */}
       {pendingOverdueAssignments.filter(a => a.assignedToUserId === currentUser?.uid).length > 0 && (
