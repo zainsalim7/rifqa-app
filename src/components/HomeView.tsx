@@ -296,6 +296,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                     <span className="text-[10px] text-stone-400">
                       {pt.category === 'khatmah' ? `أُنجز ${pt.completedUnits?.length || 0} من 30 جزء` :
                        pt.category === 'dhikr' ? `العدد: ${pt.currentCount || 0} / ${pt.targetCount || 100}` :
+                       ''}
                     </span>
                   </div>
 
