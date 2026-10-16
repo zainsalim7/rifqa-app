@@ -300,7 +300,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                     </span>
                   </div>
 
-                  {pt.category === 'khatmah' ? (
+                  {pt.category === 'khatmah' && (
                     <button
                       onClick={() => {
                         let nextJuz = 1;
@@ -318,13 +318,15 @@ export const HomeView: React.FC<HomeViewProps> = ({
                       <BookOpen className="w-3 h-3" />
                       <span>اقرأ</span>
                     </button>
-                  ) : pt.category === 'dhikr' ? (
+                  )}
+                  {pt.category === 'dhikr' && (
                     <button
                       className="px-2 py-1 bg-amber-500 hover:bg-amber-400 text-stone-950 rounded-lg text-[11px] font-bold shrink-0"
                     >
                       +10 📿
                     </button>
-                  ) : (
+                  )}
+                  {pt.category !== 'khatmah' && pt.category !== 'dhikr' && (
                     <button
                       className={`px-2 py-1 rounded-lg text-[11px] font-bold shrink-0 ${
                         isDoneToday ? 'bg-emerald-600/30 text-emerald-300' : 'bg-emerald-700 hover:bg-emerald-600 text-white'
@@ -332,8 +334,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                     >
                       {isDoneToday ? 'أُنجز ✓' : 'إتمام'}
                     </button>
-                  )
-                </div>
+                  )}
               );
           </div>
       </div>
