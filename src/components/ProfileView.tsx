@@ -32,11 +32,8 @@ import {
   Moon,
   UserPlus,
   Users,
-  Smartphone,
-  Github,
-  Download
+  Github
 } from 'lucide-react';
-import { AddDependentModal } from './AddDependentModal';
 
 const PRESET_TIMES = [
   { label: 'بعد الفجر', time: '06:00', icon: '🌅' },
@@ -48,16 +45,12 @@ const PRESET_TIMES = [
 ];
 
 interface ProfileViewProps {
-  onOpenFCM?: () => void;
-  onOpenNativeModal?: () => void;
 }
 
-export const ProfileView: React.FC<ProfileViewProps> = ({ onOpenFCM, onOpenNativeModal }) => {
   const { currentUser, userProfile, updateUserProfile } = useAuth();
   const { assignments, tasks, myDependents } = useGroup();
   const { showToast } = useToast();
   const { uncompletedTasksList, uncompletedCount, triggerTestReminder } = useTaskReminder();
-  const [addDependentModalOpen, setAddDependentModalOpen] = useState(false);
 
   const [reminderEnabled, setReminderEnabled] = useState(
     userProfile?.dailyUncompletedReminderEnabled ?? userProfile?.reminderEnabled ?? true
@@ -355,15 +348,6 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onOpenFCM, onOpenNativ
                 </div>
 
                 {onOpenFCM && (
-                  <button
-                    type="button"
-                    onClick={onOpenFCM}
-                    className="px-4 py-2 bg-stone-900 hover:bg-stone-800 text-white rounded-xl text-xs font-bold transition shadow-xs whitespace-nowrap self-start sm:self-center flex items-center gap-1.5"
-                  >
-                    <Bell className="w-3.5 h-3.5 text-amber-400" />
-                    <span>خطوات التفعيل ورمز جهازي 🚀</span>
-                  </button>
-                )}
               </div>
 
               {/* Native Mobile App (APK / iOS / GitHub) Card */}
@@ -371,27 +355,13 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onOpenFCM, onOpenNativ
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">
                     <span className="px-2 py-0.5 rounded-full bg-emerald-500/30 text-amber-300 font-bold text-[10px] border border-emerald-400/30">
-                      Capacitor Native APK
-                    </span>
-                    <strong className="text-xs font-bold text-white flex items-center gap-1.5">
-                      <Smartphone className="w-4 h-4 text-emerald-400" />
-                      تطبيق الهاتف (APK للأندرويد و iOS) + حفظ الكود في GitHub
-                    </strong>
-                  </div>
                   <p className="text-[11px] text-emerald-100/80">
                     بناء ملف APK حقيقي مع إشعارات FCM الخارجية، وتصدير المشروع بالكامل إلى مستودعك على GitHub مع بناء آلي.
                   </p>
                 </div>
 
-                {onOpenNativeModal && (
                   <button
                     type="button"
-                    onClick={onOpenNativeModal}
-                    className="px-4 py-2 bg-amber-400 hover:bg-amber-300 text-stone-950 rounded-xl text-xs font-bold transition shadow-sm whitespace-nowrap self-start sm:self-center flex items-center gap-1.5"
-                  >
-                    <Download className="w-3.5 h-3.5 text-stone-900" />
-                    <span>خطوات البناء والـ GitHub 📱</span>
-                  </button>
                 )}
               </div>
 
@@ -503,56 +473,11 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onOpenFCM, onOpenNativ
               </p>
             </div>
           </div>
-
-          <button
-            type="button"
-            onClick={() => setAddDependentModalOpen(true)}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-900 border border-blue-200 rounded-xl text-xs font-bold transition shadow-2xs"
-          >
-            <UserPlus className="w-3.5 h-3.5" />
-            <span>+ إضافة ابن / تابع</span>
-          </button>
-        </div>
-
-        {myDependents.length === 0 ? (
           <div className="p-4 rounded-2xl bg-stone-50 border border-dashed border-stone-200 text-center space-y-2.5">
             <p className="text-xs text-stone-600 leading-relaxed max-w-md mx-auto">
               إذا كان معك ولدك أو أحد أفراد عائلتك ليس لديه جوال وتريده أن يكون مكلفاً معكم بجزء من المهام أو الختمة تماماً مثلك وتكون مهمته في حسابك وتبلغ المجموعة بإنجازه؛ يمكنك إضافته هنا بضغطة واحدة!
             </p>
-            <button
-              type="button"
-              onClick={() => setAddDependentModalOpen(true)}
-              className="inline-flex items-center gap-1.5 px-4 py-2 bg-emerald-800 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition shadow-xs"
-            >
-              <UserPlus className="w-3.5 h-3.5 text-amber-300" />
-              <span>إضافة ابنك للمشاركة معك في الختمة</span>
-            </button>
-          </div>
-        ) : (
-          <div className="space-y-3">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {myDependents.map(dep => (
-                <div
-                  key={dep.userId}
-                  className="p-3.5 rounded-2xl border border-blue-200/80 bg-blue-50/40 flex items-center justify-between gap-3"
-                >
-                  <div className="flex items-center gap-2.5">
-                    <div className="w-10 h-10 rounded-2xl bg-white border border-blue-200 flex items-center justify-center text-xl shadow-2xs">
-                      {dep.avatar || '👦'}
-                    </div>
-                    <div>
-                      <h4 className="text-xs font-bold text-stone-900">{dep.displayName}</h4>
-                      <span className="text-[10px] text-blue-800 font-medium">
-                        {dep.relationship === 'daughter' ? 'ابنة' : dep.relationship === 'child' ? 'طفل' : 'ابن'} • متابعة من حسابك
-                      </span>
-                    </div>
-                  </div>
-                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold">
-                    مشارك في المجموعة
-                  </span>
-                </div>
-              ))}
-            </div>
+
             <p className="text-[11px] text-stone-500 bg-stone-50 p-2.5 rounded-xl border border-stone-200/60 leading-relaxed">
               💡 <strong>كيف تتابع إنجازه؟</strong> تظهر مهام وأوراد ابنك مباشرة في صفحتك الرئيسية، ويمكنك فتح المصحف لقراءة ورده معه، وعند الضغط على «أتمّ {myDependents[0]?.displayName || 'ابنك'}» سيتم نشر الإنجاز في نشاط المجموعة فوراً مع التهنئة!
             </p>
@@ -640,10 +565,6 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onOpenFCM, onOpenNativ
         )}
       </div>
 
-      {/* Add Dependent Modal */}
-      {addDependentModalOpen && (
-        <AddDependentModal
-          onClose={() => setAddDependentModalOpen(false)}
         />
       )}
 

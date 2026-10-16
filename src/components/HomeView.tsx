@@ -9,7 +9,6 @@ import { isQuranTask, QURAN_30_JUZ } from '../utils/quranData';
 import { getReadingBookmark, getLatestActiveBookmark } from '../utils/quranService';
 import { QuranReaderModal } from './QuranReaderModal';
 import { MultiJuzAssignmentModal } from './MultiJuzAssignmentModal';
-import { AddDependentModal } from './AddDependentModal';
 import { 
   CheckCircle2, 
   Clock, 
@@ -25,7 +24,6 @@ import {
   ChevronLeft,
   Users,
   Compass,
-  UserPlus,
   Heart,
   Lock
 } from 'lucide-react';
@@ -70,7 +68,6 @@ export const HomeView: React.FC<HomeViewProps> = ({
     undoUnitCompleted,
     excuseUnit,
     incrementSharedTarget,
-    seedDemoGroup,
     requestSwap,
     openQuranReader
   } = useGroup();
@@ -89,7 +86,6 @@ export const HomeView: React.FC<HomeViewProps> = ({
     isCompleted: boolean;
   } | null>(null);
   const [multiJuzTask, setMultiJuzTask] = useState<Task | null>(null);
-  const [addDependentModalOpen, setAddDependentModalOpen] = useState(false);
 
   const myDependentUserIds = React.useMemo(() => {
     return new Set(myDependents.map(d => d.userId));
@@ -176,12 +172,6 @@ export const HomeView: React.FC<HomeViewProps> = ({
         </div>
 
         <div className="pt-4 border-t border-stone-200">
-          <button
-            onClick={() => seedDemoGroup()}
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-amber-50 border border-amber-300 text-amber-900 font-semibold text-sm hover:bg-amber-100 transition shadow-sm"
-          >
-            <Sparkles className="w-4 h-4 text-amber-600" />
-            <span>تجربة المجموعة النموذجية (ختمة القرآن 30 جزء + أذكار)</span>
           </button>
           <p className="text-[11px] text-stone-500 mt-2">
             تنشئ مجموعة كاملة جاهزة بها ختمة قرآن ومهام نموذجية للتجربة المباشرة.
@@ -198,7 +188,6 @@ export const HomeView: React.FC<HomeViewProps> = ({
                 <span>أو ابدأ برنامجك وختمتك الخاصة الفردية (سرّي دون مجموعة) 🔒</span>
               </button>
             </div>
-          )}
         </div>
       </div>
     );
@@ -216,10 +205,8 @@ export const HomeView: React.FC<HomeViewProps> = ({
                 {currentGroup.isDemo ? 'مجموعة تجريبية' : 'مجموعة نشطة'}
               </span>
               <span className="text-xs text-amber-200 font-semibold font-amiri bg-emerald-950/40 px-2 py-0.5 rounded-lg border border-emerald-600/30">
-                🌙 {getHijriDate(new Date()).formattedArabic} ({Math.max(1, 30 - getHijriDate(new Date()).day)} يوم لنهاية الشهر)
               </span>
               <span className="text-xs text-emerald-300">
-                {formatDateInAden(new Date())}
               </span>
             </div>
             {isCurrentUserAdmin && (
@@ -230,7 +217,6 @@ export const HomeView: React.FC<HomeViewProps> = ({
                 <Plus className="w-3.5 h-3.5" />
                 <span>إضافة مهمة</span>
               </button>
-            )}
           </div>
 
           <div>
@@ -239,7 +225,6 @@ export const HomeView: React.FC<HomeViewProps> = ({
               <p className="text-emerald-200/90 text-xs md:text-sm mt-1 max-w-xl leading-relaxed">
                 {currentGroup.description}
               </p>
-            )}
           </div>
 
           {/* Quick Group Stat Bar */}
@@ -296,7 +281,6 @@ export const HomeView: React.FC<HomeViewProps> = ({
               <span>{personalTasks.length > 0 ? 'فتح ومتابعة الأوراد' : 'بدء برنامج خاص'}</span>
               <ChevronLeft className="w-3.5 h-3.5" />
             </button>
-          )}
         </div>
 
         {/* Quick Preview of Active Personal Items if any */}
@@ -313,7 +297,6 @@ export const HomeView: React.FC<HomeViewProps> = ({
                     <span className="text-[10px] text-stone-400">
                       {pt.category === 'khatmah' ? `أُنجز ${pt.completedUnits?.length || 0} من 30 جزء` :
                        pt.category === 'dhikr' ? `العدد: ${pt.currentCount || 0} / ${pt.targetCount || 100}` :
-                       (pt.reminderTime ? `تنبيه ${pt.reminderTime}` : 'ورد يومي')}
                     </span>
                   </div>
 
@@ -337,26 +320,21 @@ export const HomeView: React.FC<HomeViewProps> = ({
                     </button>
                   ) : pt.category === 'dhikr' ? (
                     <button
-                      onClick={() => incrementDhikr(pt.id, 10)}
                       className="px-2 py-1 bg-amber-500 hover:bg-amber-400 text-stone-950 rounded-lg text-[11px] font-bold shrink-0"
                     >
                       +10 📿
                     </button>
                   ) : (
                     <button
-                      onClick={() => markCompletedToday(pt.id)}
                       className={`px-2 py-1 rounded-lg text-[11px] font-bold shrink-0 ${
                         isDoneToday ? 'bg-emerald-600/30 text-emerald-300' : 'bg-emerald-700 hover:bg-emerald-600 text-white'
                       }`}
                     >
                       {isDoneToday ? 'أُنجز ✓' : 'إتمام'}
                     </button>
-                  )}
                 </div>
               );
-            })}
           </div>
-        )}
       </div>
 
       {/* Pending Overdue Wards from Previous Cycles ("معلق في الذمة حتى ينجزه") */}
@@ -404,7 +382,6 @@ export const HomeView: React.FC<HomeViewProps> = ({
                         cycleNumber: ov.cycleNumber,
                         unitNumber: ov.unitNumber,
                         isCompleted: false,
-                      })}
                       className="flex-1 py-1.5 px-3 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-2xs"
                     >
                       <BookOpen className="w-3.5 h-3.5" />
@@ -423,10 +400,8 @@ export const HomeView: React.FC<HomeViewProps> = ({
                     </button>
                   </div>
                 </div>
-              ))}
           </div>
         </div>
-      )}
 
       {/* Hero Quran Khatmah & Ward Card (بطاقة الورد القرآني المباشرة والمصحف الشريف) */}
       {(() => {
@@ -471,13 +446,11 @@ export const HomeView: React.FC<HomeViewProps> = ({
                     cycleNumber: latestActiveBookmark.cycleNumber || 1,
                     unitNumber: latestActiveBookmark.unitNumber,
                     isCompleted: false,
-                  })}
                   className="px-3 py-1.5 rounded-xl bg-amber-400/20 hover:bg-amber-400/30 text-amber-200 border border-amber-400/40 text-xs font-semibold flex items-center gap-1.5 transition shadow-2xs"
                   title="استئناف القراءة من حيث توقفت"
                 >
                   <span>📌 متابعة من صفحة {latestActiveBookmark.pageNumber || '—'} (سورة {latestActiveBookmark.surahName})</span>
                 </button>
-              )}
             </div>
 
             {/* If user has assigned Quran units in this cycle */}
@@ -523,20 +496,17 @@ export const HomeView: React.FC<HomeViewProps> = ({
                               <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-400/20 text-amber-200 border border-amber-400/30 font-semibold">
                                 قيد القراءة
                               </span>
-                            )}
                           </div>
 
                           {info && (
                             <p className="text-xs text-emerald-200/90 leading-relaxed font-amiri">
                               {info.description}
                             </p>
-                          )}
 
                           {unitBookmark && (
                             <span className="text-[11px] text-amber-300 block font-medium">
                               📌 آخر موضع: صفحة {unitBookmark.pageNumber || '—'} - سورة {unitBookmark.surahName} (الآية {unitBookmark.lastAyahNumber})
                             </span>
-                          )}
                         </div>
 
                         {/* Direct Action Buttons */}
@@ -548,7 +518,6 @@ export const HomeView: React.FC<HomeViewProps> = ({
                               cycleNumber: primaryQuranTask!.currentCycleNumber || 1,
                               unitNumber: unit.unitNumber,
                               isCompleted: isDone,
-                            })}
                             className="flex-1 py-2.5 px-4 bg-gradient-to-l from-amber-400 to-amber-300 hover:from-amber-300 hover:to-amber-200 text-stone-950 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 shadow-sm active:scale-95"
                             title="فتح نص الجزء بالرسم العثماني مع التمرير التلقائي"
                           >
@@ -558,7 +527,6 @@ export const HomeView: React.FC<HomeViewProps> = ({
 
                           {isDone ? (
                             <button
-                              onClick={() => undoUnitCompleted(primaryQuranTask!.id, primaryQuranTask!.currentCycleNumber || 1, unit.unitNumber)}
                               className="py-2 px-3 bg-emerald-950/70 hover:bg-emerald-950 text-emerald-300 rounded-xl text-xs font-semibold transition flex items-center gap-1 border border-emerald-700/50"
                             >
                               <RotateCcw className="w-3.5 h-3.5" />
@@ -566,18 +534,15 @@ export const HomeView: React.FC<HomeViewProps> = ({
                             </button>
                           ) : (
                             <button
-                              onClick={() => handleMarkComplete(primaryQuranTask!.id, primaryQuranTask!.currentCycleNumber || 1, unit.unitNumber)}
                               disabled={completingUnitId === unit.unitNumber}
                               className="py-2 px-3.5 bg-emerald-700 hover:bg-emerald-600 text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-xs border border-emerald-500/50"
                             >
                               <CheckCircle2 className="w-3.5 h-3.5 text-amber-300" />
                               <span>أتممت</span>
                             </button>
-                          )}
                         </div>
                       </div>
                     );
-                  })}
                 </div>
 
                 {/* Quick picker to browse any other Juz */}
@@ -585,14 +550,12 @@ export const HomeView: React.FC<HomeViewProps> = ({
                   <span className="text-emerald-300">أو تصفح أي جزء آخر من الـ 30 جزءاً:</span>
                   <select
                     value={selectedBrowseJuz}
-                    onChange={(e) => setSelectedBrowseJuz(Number(e.target.value))}
                     className="py-1 px-2 rounded-lg bg-emerald-950 text-emerald-100 border border-emerald-600 text-xs font-semibold focus:outline-none"
                   >
                     {QURAN_30_JUZ.map(j => (
                       <option key={j.juzNumber} value={j.juzNumber}>
                         الجزء {j.juzNumber}: {j.title}
                       </option>
-                    ))}
                   </select>
                   <button
                     onClick={() => openQuranReader({
@@ -601,7 +564,6 @@ export const HomeView: React.FC<HomeViewProps> = ({
                       cycleNumber: primaryQuranTask!.currentCycleNumber || 1,
                       unitNumber: selectedBrowseJuz,
                       isCompleted: false,
-                    })}
                     className="px-3 py-1 bg-amber-400 hover:bg-amber-300 text-stone-950 rounded-lg text-xs font-bold transition"
                   >
                     📖 قراءة الجزء {selectedBrowseJuz}
@@ -620,14 +582,12 @@ export const HomeView: React.FC<HomeViewProps> = ({
                     <span className="text-xs text-emerald-300 shrink-0 font-medium">اختر الجزء:</span>
                     <select
                       value={selectedBrowseJuz}
-                      onChange={(e) => setSelectedBrowseJuz(Number(e.target.value))}
                       className="w-full py-2 px-3 rounded-xl bg-emerald-900 text-amber-200 border border-emerald-600 text-xs font-bold focus:outline-none"
                     >
                       {QURAN_30_JUZ.map(j => (
                         <option key={j.juzNumber} value={j.juzNumber}>
                           الجزء {j.juzNumber}: {j.title} ({j.description})
                         </option>
-                      ))}
                     </select>
                   </div>
 
@@ -638,7 +598,6 @@ export const HomeView: React.FC<HomeViewProps> = ({
                       cycleNumber: primaryQuranTask?.currentCycleNumber || 1,
                       unitNumber: selectedBrowseJuz,
                       isCompleted: false,
-                    })}
                     className="py-2.5 px-5 bg-gradient-to-l from-amber-400 to-amber-300 hover:from-amber-300 hover:to-amber-200 text-stone-950 font-extrabold text-xs rounded-xl shadow-sm flex items-center gap-2 transition active:scale-95"
                   >
                     <BookOpen className="w-4 h-4 text-emerald-950" />
@@ -646,10 +605,8 @@ export const HomeView: React.FC<HomeViewProps> = ({
                   </button>
                 </div>
               </div>
-            )}
           </div>
         );
-      })()}
 
       {/* Dependents & Children Section (أوراد ومهام الأبناء والتابعين تحت إشرافك) */}
       <div className="bg-white rounded-3xl border border-stone-200 p-5 md:p-6 shadow-sm space-y-4">
@@ -665,26 +622,10 @@ export const HomeView: React.FC<HomeViewProps> = ({
                   <span className="text-[10px] px-2 py-0.5 rounded-full bg-blue-50 text-blue-800 font-sans font-bold border border-blue-200">
                     {myDependents.length} تابع
                   </span>
-                )}
               </h3>
               <p className="text-xs text-stone-500">
                 متابعة مهام أولادك الذين ليس لديهم هواتف، وقراءة أورادهم معك وتسجيل إنجازهم للمجموعة.
               </p>
-            </div>
-          </div>
-
-          <button
-            onClick={() => setAddDependentModalOpen(true)}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-900 border border-blue-200 rounded-xl text-xs font-bold transition shadow-2xs"
-          >
-            <UserPlus className="w-3.5 h-3.5" />
-            <span>+ إضافة ابن / تابع</span>
-          </button>
-        </div>
-
-        {myDependentAssignments.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
-            {myDependentAssignments.map(assign => {
               const isDone = assign.status === 'completed';
               const childMember = members.find(m => m.userId === assign.assignedToUserId);
               const avatar = childMember?.avatar || '👦';
@@ -718,7 +659,6 @@ export const HomeView: React.FC<HomeViewProps> = ({
                         <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 font-bold">
                           قيد الإنجاز
                         </span>
-                      )}
                     </div>
 
                     <div className="pr-7">
@@ -741,18 +681,15 @@ export const HomeView: React.FC<HomeViewProps> = ({
                           cycleNumber: assign.cycleNumber,
                           unitNumber: assign.unitNumber,
                           isCompleted: isDone,
-                        })}
                         className="py-1.5 px-3 bg-white hover:bg-stone-100 text-stone-800 border border-stone-300 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-2xs"
                         title="فتح وقراءة الجزء في المصحف مع ابنك"
                       >
                         <BookOpen className="w-3.5 h-3.5 text-emerald-800" />
                         <span>📖 قراءة ورد {assign.assignedToName}</span>
                       </button>
-                    )}
 
                     {isDone ? (
                       <button
-                        onClick={() => undoUnitCompleted(assign.taskId, assign.cycleNumber, assign.unitNumber)}
                         className="py-1.5 px-3 text-stone-500 hover:text-stone-800 rounded-xl text-xs font-semibold transition flex items-center gap-1 mr-auto"
                       >
                         <RotateCcw className="w-3 h-3" />
@@ -760,28 +697,23 @@ export const HomeView: React.FC<HomeViewProps> = ({
                       </button>
                     ) : (
                       <button
-                        onClick={() => handleMarkComplete(assign.taskId, assign.cycleNumber, assign.unitNumber)}
                         className="py-1.5 px-3.5 bg-emerald-800 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-xs mr-auto"
                       >
                         <CheckCircle2 className="w-3.5 h-3.5 text-amber-300" />
                         <span>أتمّ {assign.assignedToName} ✨</span>
                       </button>
-                    )}
                   </div>
                 </div>
               );
-            })}
           </div>
         ) : myDependents.length > 0 ? (
           <div className="p-4 rounded-2xl bg-blue-50/60 border border-blue-200/70 text-xs text-blue-950 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div className="space-y-0.5">
               <span className="font-bold block">لديك {myDependents.length} تابع في المجموعة:</span>
               <span className="text-[11px] text-blue-800">
-                ({myDependents.map(d => d.displayName).join('، ')})، ومهماتهم مدرجة ضمن دورة المجموعة ويمكنك تعيين أجزاء إضافية لهم يدوياً من تفاصيل المهمة.
               </span>
             </div>
             <button
-              onClick={() => setAddDependentModalOpen(true)}
               className="px-3 py-1.5 bg-blue-800 text-white rounded-xl text-xs font-bold hover:bg-blue-700 transition shrink-0"
             >
               + إضافة تابع آخر
@@ -793,19 +725,16 @@ export const HomeView: React.FC<HomeViewProps> = ({
               إذا كان لديك أولاد ليس لديهم هواتف، يمكنك إضافتهم إلى المجموعة ليقرؤوا أورادهم معك وتُبلّغ المجموعة بإنجازهم أولاً بأول وتشجعهم على ختم القرآن والأذكار.
             </p>
             <button
-              onClick={() => setAddDependentModalOpen(true)}
               className="px-3.5 py-1.5 bg-emerald-800 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition shrink-0 shadow-2xs whitespace-nowrap"
             >
               + إضافة ابني للمجموعة
             </button>
           </div>
-        )}
       </div>
 
       {/* Recurrence Filter Tabs */}
       <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
         <button
-          onClick={() => setRecurrenceFilter('all')}
           className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition ${
             recurrenceFilter === 'all'
               ? 'bg-emerald-800 text-white shadow-sm'
@@ -815,7 +744,6 @@ export const HomeView: React.FC<HomeViewProps> = ({
           كافة المهام ({tasks.length})
         </button>
         <button
-          onClick={() => setRecurrenceFilter('daily')}
           className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition ${
             recurrenceFilter === 'daily'
               ? 'bg-emerald-800 text-white shadow-sm'
@@ -825,7 +753,6 @@ export const HomeView: React.FC<HomeViewProps> = ({
           اليومية ({tasks.filter(t => t.recurrence === 'daily').length})
         </button>
         <button
-          onClick={() => setRecurrenceFilter('weekly')}
           className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition ${
             recurrenceFilter === 'weekly'
               ? 'bg-emerald-800 text-white shadow-sm'
@@ -835,7 +762,6 @@ export const HomeView: React.FC<HomeViewProps> = ({
           الأسبوعية ({tasks.filter(t => t.recurrence === 'weekly').length})
         </button>
         <button
-          onClick={() => setRecurrenceFilter('monthly')}
           className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition ${
             recurrenceFilter === 'monthly'
               ? 'bg-emerald-800 text-white shadow-sm'
@@ -859,7 +785,6 @@ export const HomeView: React.FC<HomeViewProps> = ({
               >
                 إضافة مهمة جديدة للمجموعة
               </button>
-            )}
           </div>
         ) : (
           filteredTasks.map(task => {
@@ -897,7 +822,6 @@ export const HomeView: React.FC<HomeViewProps> = ({
                         <span className="px-2 py-0.5 rounded-md bg-amber-50 text-amber-800 text-[10px] font-semibold border border-amber-200/60">
                           📖 ختمة 30 جزء
                         </span>
-                      )}
                     </div>
 
                     <h3 className="text-base md:text-lg font-bold text-stone-900 pt-0.5">
@@ -908,13 +832,11 @@ export const HomeView: React.FC<HomeViewProps> = ({
                       <p className="text-xs text-stone-600 leading-relaxed max-w-xl">
                         {task.instructions}
                       </p>
-                    )}
                   </div>
 
                   <div className="flex items-center gap-1.5 shrink-0">
                     {isCurrentUserAdmin && isQuranTask(task) && (
                       <button
-                        onClick={() => setMultiJuzTask(task)}
                         className="flex items-center gap-1 text-[11px] text-amber-900 bg-amber-50 hover:bg-amber-100 border border-amber-300 font-bold px-2.5 py-1.5 rounded-xl transition shadow-2xs"
                         title="تكليف بعض الأعضاء بأكثر من جزء (للأعداد الأقل من 30 عضواً)"
                       >
@@ -922,10 +844,8 @@ export const HomeView: React.FC<HomeViewProps> = ({
                         <span className="hidden sm:inline">تكليف بأكثر من جزء</span>
                         <span className="sm:hidden">تكليف</span>
                       </button>
-                    )}
 
                     <button
-                      onClick={() => onOpenTaskDetail(task)}
                       className="flex items-center gap-1 text-xs text-emerald-800 hover:text-emerald-900 font-semibold px-2.5 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100/70 transition shrink-0"
                     >
                       <span>التفاصيل</span>
@@ -965,19 +885,16 @@ export const HomeView: React.FC<HomeViewProps> = ({
                         {[10, 33, 100, 500].map(amt => (
                           <button
                             key={amt}
-                            onClick={() => incrementSharedTarget(task.id, amt)}
                             className="px-3.5 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 rounded-xl text-xs font-bold transition shadow-xs"
                           >
                             +{amt}
                           </button>
-                        ))}
 
                         <div className="flex items-center gap-1.5 mr-auto">
                           <input
                             type="number"
                             placeholder="عدد مخصص"
                             className="w-24 text-xs px-2.5 py-1.5 rounded-xl border border-stone-300 text-stone-800 focus:outline-none focus:border-emerald-600"
-                            onChange={(e) => setCustomCounterInput(prev => ({ ...prev, [task.id]: Number(e.target.value) }))}
                             value={customCounterInput[task.id] || ''}
                           />
                           <button
@@ -1013,13 +930,11 @@ export const HomeView: React.FC<HomeViewProps> = ({
                           <p>أنت غير مسجل في وحدات هذه الدورة حالياً. يمكنك استعراض باقي أجزاء المجموعة من زر التفاصيل.</p>
                           {isQuranTask(task) && (
                             <button
-                              onClick={() => openQuranReader({ taskId: task.id, cycleNumber: task.currentCycleNumber || 1 })}
                               className="px-4 py-2 bg-emerald-800 text-white rounded-xl text-xs font-bold hover:bg-emerald-700 transition inline-flex items-center gap-1.5 shadow-xs"
                             >
                               <BookOpen className="w-3.5 h-3.5 text-amber-300" />
                               <span>📖 فتح وقراءة المصحف الشريف</span>
                             </button>
-                          )}
                         </div>
                       ) : (
                         <div className="space-y-2.5">
@@ -1045,16 +960,13 @@ export const HomeView: React.FC<HomeViewProps> = ({
                                       cycleNumber: task.currentCycleNumber || 1,
                                       unitNumber: u.unitNumber,
                                       isCompleted: u.status === 'completed',
-                                    })}
                                     className="px-3.5 py-2 bg-amber-400 hover:bg-amber-300 text-stone-900 rounded-xl text-xs font-extrabold transition flex items-center gap-1.5 shadow-xs active:scale-95"
                                   >
                                     <BookOpen className="w-3.5 h-3.5" />
                                     <span>📖 قراءة {u.unitTitle}</span>
                                   </button>
-                                ))}
                               </div>
                             </div>
-                          )}
 
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                             {myAssigns.map(unit => {
@@ -1082,24 +994,19 @@ export const HomeView: React.FC<HomeViewProps> = ({
                                           <CheckCircle2 className="w-3 h-3" />
                                           مكتمل
                                         </span>
-                                      )}
                                       {isExcused && (
                                         <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-200 text-amber-900 font-bold">
                                           معتذر
                                         </span>
-                                      )}
                                     </div>
 
                                     {unit.completedAt && (
                                       <span className="text-[10px] text-stone-500 block mt-1">
-                                        تم في: {formatDateTimeInAden(unit.completedAt)}
                                       </span>
-                                    )}
                                     {unit.excusedReason && (
                                       <span className="text-[10px] text-amber-800 block mt-1">
                                         سبب الاعتذار: {unit.excusedReason}
                                       </span>
-                                    )}
                                   </div>
 
                                   {/* Action Buttons */}
@@ -1112,18 +1019,15 @@ export const HomeView: React.FC<HomeViewProps> = ({
                                           cycleNumber: task.currentCycleNumber || 1,
                                           unitNumber: unit.unitNumber,
                                           isCompleted: isDone,
-                                        })}
                                         className="py-1.5 px-3 bg-emerald-800 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-xs"
                                         title="فتح وقراءة نص الجزء من المصحف الشريف"
                                       >
                                         <BookOpen className="w-3.5 h-3.5 text-amber-300" />
                                         <span>📖 قراءة الجزء ({unit.unitNumber})</span>
                                       </button>
-                                    )}
 
                                   {isDone ? (
                                     <button
-                                      onClick={() => undoUnitCompleted(task.id, task.currentCycleNumber || 1, unit.unitNumber)}
                                       className="text-xs text-stone-500 hover:text-stone-700 flex items-center gap-1 font-medium transition py-1 mr-auto"
                                     >
                                       <RotateCcw className="w-3 h-3" />
@@ -1131,7 +1035,6 @@ export const HomeView: React.FC<HomeViewProps> = ({
                                     </button>
                                   ) : isExcused ? (
                                     <button
-                                      onClick={() => handleMarkComplete(task.id, task.currentCycleNumber || 1, unit.unitNumber)}
                                       className="flex-1 py-1.5 bg-emerald-800 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition shadow-xs"
                                     >
                                       العدول والإتمام (أتممت)
@@ -1139,7 +1042,6 @@ export const HomeView: React.FC<HomeViewProps> = ({
                                   ) : (
                                     <div className="flex items-center gap-1.5 flex-1">
                                       <button
-                                        onClick={() => handleMarkComplete(task.id, task.currentCycleNumber || 1, unit.unitNumber)}
                                         disabled={completingUnitId === unit.unitNumber}
                                         className="flex-1 py-2 bg-emerald-800 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition shadow-sm flex items-center justify-center gap-1.5"
                                       >
@@ -1152,28 +1054,22 @@ export const HomeView: React.FC<HomeViewProps> = ({
                                           taskId: task.id,
                                           cycleNumber: task.currentCycleNumber || 1,
                                           unitNumber: unit.unitNumber
-                                        })}
                                         title="أعتذر عن هذه المهمة لظرف طارئ"
                                         className="px-2.5 py-2 text-stone-500 hover:text-amber-800 bg-stone-100 hover:bg-amber-100 rounded-xl text-xs font-semibold transition"
                                       >
                                         اعتذار
                                       </button>
                                     </div>
-                                  )}
                                 </div>
                               </div>
                             );
-                          })}
                           </div>
                         </div>
-                      )}
                     </div>
-                  )}
                 </div>
               </div>
             );
           })
-        )}
       </div>
 
       {/* Excuse Modal */}
@@ -1193,7 +1089,6 @@ export const HomeView: React.FC<HomeViewProps> = ({
               </label>
               <textarea
                 value={excuseReason}
-                onChange={(e) => setExcuseReason(e.target.value)}
                 placeholder="مثال: ظرف سفر طارئ، انشغال مؤقت..."
                 className="w-full text-xs p-3 rounded-xl border border-stone-300 focus:outline-none focus:border-amber-600 resize-none h-20"
               />
@@ -1207,7 +1102,6 @@ export const HomeView: React.FC<HomeViewProps> = ({
                 تأكيد الاعتذار
               </button>
               <button
-                onClick={() => setExcuseDialogTarget(null)}
                 className="px-4 py-2.5 bg-stone-100 hover:bg-stone-200 text-stone-700 rounded-xl text-xs font-semibold transition"
               >
                 إلغاء
@@ -1215,7 +1109,6 @@ export const HomeView: React.FC<HomeViewProps> = ({
             </div>
           </div>
         </div>
-      )}
 
       {/* Quran Reader Modal (Requirement #3 & #4) */}
       {readingJuz && (
@@ -1240,24 +1133,15 @@ export const HomeView: React.FC<HomeViewProps> = ({
             await undoUnitCompleted(tId, cNum, uNum);
             setReadingJuz(prev => prev ? { ...prev, isCompleted: false } : null);
           }}
-          onClose={() => setReadingJuz(null)}
         />
-      )}
 
       {/* Multi-Juz Assignment Modal for Admin (Requirement #5: less than 30 members) */}
       {multiJuzTask && (
         <MultiJuzAssignmentModal
           task={multiJuzTask}
-          onClose={() => setMultiJuzTask(null)}
         />
-      )}
 
-      {/* Add Dependent Child Modal */}
-      {addDependentModalOpen && (
-        <AddDependentModal
-          onClose={() => setAddDependentModalOpen(false)}
         />
-      )}
 
     </div>
   );

@@ -3,7 +3,6 @@ import { useAuth } from '../context/AuthContext';
 import { useGroup } from '../context/GroupContext';
 import { useToast } from '../context/ToastContext';
 import { formatDateInAden, formatDateTimeInAden } from '../utils/dateUtils';
-import { AddDependentModal } from './AddDependentModal';
 import { 
   Users, 
   Share2, 
@@ -20,8 +19,7 @@ import {
   Info,
   HelpCircle,
   ChevronDown,
-  ChevronUp,
-  UserPlus
+  ChevronUp
 } from 'lucide-react';
 
 interface GroupViewProps {
@@ -53,7 +51,6 @@ export const GroupView: React.FC<GroupViewProps> = ({
   const [activeTab, setActiveTab] = useState<'members' | 'activity' | 'tasks'>('members');
   const [inviteCode, setInviteCode] = useState<string>('RIFQA-INV');
   const [showGuide, setShowGuide] = useState(true);
-  const [addDependentModalOpen, setAddDependentModalOpen] = useState(false);
   const [confirmDialog, setConfirmDialog] = useState<{
     title: string;
     message: string;
@@ -210,14 +207,11 @@ export const GroupView: React.FC<GroupViewProps> = ({
               </span>
             </div>
 
-            <button
-              onClick={() => setAddDependentModalOpen(true)}
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-900 border border-blue-200 rounded-xl text-xs font-bold transition shadow-2xs"
+
+              
             >
-              <UserPlus className="w-3.5 h-3.5" />
+
               <span>+ إضافة ابن / تابع (بدون هاتف)</span>
-            </button>
-          </div>
 
           <div className="divide-y divide-stone-100">
             {members.map(member => {
@@ -469,14 +463,6 @@ export const GroupView: React.FC<GroupViewProps> = ({
             <span>حذف المجموعة</span>
           </button>
         </div>
-      )}
-
-      {/* Add Dependent Modal */}
-      {addDependentModalOpen && (
-        <AddDependentModal
-          onClose={() => setAddDependentModalOpen(false)}
-          groupId={currentGroup.id}
-        />
       )}
 
       {/* In-App Confirmation Modal */}

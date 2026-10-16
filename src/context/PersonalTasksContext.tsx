@@ -56,7 +56,6 @@ const PersonalTasksContext = createContext<PersonalTasksContextType | null>(null
 const LOCAL_STORAGE_KEY_PREFIX = 'rifqa_personal_tasks_';
 
 export const PersonalTasksProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { currentUser, isDemoUser } = useAuth();
   const { showToast } = useToast();
   const [personalTasks, setPersonalTasks] = useState<PersonalTask[]>([]);
   const [loadingPersonalTasks, setLoadingPersonalTasks] = useState(true);
@@ -105,7 +104,6 @@ export const PersonalTasksProvider: React.FC<{ children: React.ReactNode }> = ({
       setPersonalTasks(cached);
     }
 
-    if (isDemoUser) {
       // Demo mode: purely local
       setLoadingPersonalTasks(false);
       return;
@@ -134,7 +132,6 @@ export const PersonalTasksProvider: React.FC<{ children: React.ReactNode }> = ({
     );
 
     return () => unsubscribe();
-  }, [currentUser?.uid, isDemoUser, loadLocalTasks, saveLocalTasks]);
 
   // Create personal task
   const createPersonalTask = async (input: CreatePersonalTaskInput): Promise<PersonalTask> => {
@@ -166,7 +163,6 @@ export const PersonalTasksProvider: React.FC<{ children: React.ReactNode }> = ({
       updatedAt: nowISO,
     };
 
-    if (isDemoUser) {
       const updated = [newTask, ...personalTasks];
       setPersonalTasks(updated);
       saveLocalTasks(updated);
@@ -194,7 +190,6 @@ export const PersonalTasksProvider: React.FC<{ children: React.ReactNode }> = ({
     const nowISO = new Date().toISOString();
     const finalUpdates = { ...updates, updatedAt: nowISO };
 
-    if (isDemoUser) {
       const updated = personalTasks.map(t => t.id === taskId ? { ...t, ...finalUpdates } : t);
       setPersonalTasks(updated);
       saveLocalTasks(updated);
@@ -216,7 +211,6 @@ export const PersonalTasksProvider: React.FC<{ children: React.ReactNode }> = ({
   const deletePersonalTask = async (taskId: string) => {
     if (!currentUser) return;
 
-    if (isDemoUser) {
       const updated = personalTasks.filter(t => t.id !== taskId);
       setPersonalTasks(updated);
       saveLocalTasks(updated);
