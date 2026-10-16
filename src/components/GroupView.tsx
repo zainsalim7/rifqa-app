@@ -118,7 +118,8 @@ export const GroupView: React.FC<GroupViewProps> = ({
             <h2 className="text-xl md:text-2xl font-bold text-stone-900">{currentGroup.name}</h2>
             {currentGroup.description && (
               <p className="text-xs text-stone-600 leading-relaxed max-w-xl">{currentGroup.description}</p>
-            )}
+            )
+            }
           </div>
 
           {/* Invitation Box */}
@@ -209,7 +210,6 @@ export const GroupView: React.FC<GroupViewProps> = ({
 
 
               
-            >
 
               <span>+ إضافة ابن / تابع (بدون هاتف)</span>
 
@@ -230,19 +230,22 @@ export const GroupView: React.FC<GroupViewProps> = ({
                         <span className="text-xs font-bold text-stone-900">{member.displayName}</span>
                         {isMe && (
                           <span className="text-[10px] px-1.5 py-0.2 rounded bg-stone-200 text-stone-700 font-semibold">أنت</span>
-                        )}
+                        )
+                        }
                         {member.isDependent && (
                           <span className="text-[10px] px-2 py-0.5 rounded-full bg-blue-50 text-blue-800 border border-blue-200 font-bold flex items-center gap-1">
                             <span>{member.avatar || '👦'}</span>
                             <span>{isMyChild ? 'ابنك التابع' : `تابع لـ: ${member.parentDisplayName || 'ولي الأمر'}`}</span>
                           </span>
-                        )}
+                        )
+                        }
                         {isAdmin && (
                           <span className="text-[10px] px-2 py-0.5 rounded-md bg-amber-100 text-amber-900 font-bold flex items-center gap-1">
                             <ShieldCheck className="w-3 h-3 text-amber-700" />
                             مشرف
                           </span>
-                        )}
+                        )
+                        }
                       </div>
                       <span className="text-[11px] text-stone-400">
                         انضم: {formatDateInAden(member.joinedAt)}
@@ -272,7 +275,8 @@ export const GroupView: React.FC<GroupViewProps> = ({
                         <Trash2 className="w-3 h-3 text-rose-500" />
                         <span className="hidden sm:inline">إزالة التابع</span>
                       </button>
-                    )}
+                    )
+                    }
 
                     {isCurrentUserAdmin && !isMe && !member.isDependent && (
                       <>
@@ -302,7 +306,8 @@ export const GroupView: React.FC<GroupViewProps> = ({
                             <ShieldCheck className="w-3 h-3 text-emerald-700" />
                             <span className="hidden sm:inline">ترقية لمشرف</span>
                           </button>
-                        )}
+                        )
+                        }
 
                         <button
                           onClick={() => {
@@ -322,7 +327,8 @@ export const GroupView: React.FC<GroupViewProps> = ({
                           <UserMinus className="w-4 h-4" />
                         </button>
                       </>
-                    )}
+                    )
+                    }
                   </div>
                 </div>
               );
@@ -397,10 +403,11 @@ export const GroupView: React.FC<GroupViewProps> = ({
                   </ol>
                 </div>
               </div>
-            )}
+            )
+            }
           </div>
         </div>
-      )}
+      )
 
       {/* Tab 2: Activity Feed */}
       {activeTab === 'activity' && (
@@ -435,9 +442,11 @@ export const GroupView: React.FC<GroupViewProps> = ({
                 </div>
               ))}
             </div>
-          )}
+          )
+          }
         </div>
-      )}
+      )
+      }
 
       {/* Admin Danger Zone */}
       {isCurrentUserAdmin && (
@@ -463,7 +472,8 @@ export const GroupView: React.FC<GroupViewProps> = ({
             <span>حذف المجموعة</span>
           </button>
         </div>
-      )}
+      )
+      }
 
       {/* In-App Confirmation Modal */}
       {confirmDialog && (
@@ -489,7 +499,8 @@ export const GroupView: React.FC<GroupViewProps> = ({
             </div>
           </div>
         </div>
-      )}
+      )
+      }
 
     </div>
   );

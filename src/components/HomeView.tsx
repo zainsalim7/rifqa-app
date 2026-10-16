@@ -172,7 +172,6 @@ export const HomeView: React.FC<HomeViewProps> = ({
         </div>
 
         <div className="pt-4 border-t border-stone-200">
-          </button>
           <p className="text-[11px] text-stone-500 mt-2">
             تنشئ مجموعة كاملة جاهزة بها ختمة قرآن ومهام نموذجية للتجربة المباشرة.
           </p>
@@ -188,9 +187,8 @@ export const HomeView: React.FC<HomeViewProps> = ({
                 <span>أو ابدأ برنامجك وختمتك الخاصة الفردية (سرّي دون مجموعة) 🔒</span>
               </button>
             </div>
-        </div>
-      </div>
     );
+        </div>
   }
 
   return (

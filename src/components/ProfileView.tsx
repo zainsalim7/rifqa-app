@@ -277,7 +277,8 @@ interface ProfileViewProps {
                     <Volume2 className="w-4 h-4 text-emerald-700" />
                   ) : (
                     <VolumeX className="w-4 h-4 text-stone-400" />
-                  )}
+                  )
+                  }
                   <div>
                     <span className="text-xs font-bold text-stone-800 block">نغمة التنبيه الصوتية:</span>
                     <span className="text-[11px] text-stone-500">
@@ -316,7 +317,8 @@ interface ProfileViewProps {
                       <span className="text-rose-600 font-bold">محظورة في إعدادات المتصفح ❌</span>
                     ) : (
                       <span className="text-amber-700 font-bold">تحتاج إلى إذن ⚠️</span>
-                    )}
+                    )
+                    }
                   </span>
                 </div>
 
@@ -328,7 +330,8 @@ interface ProfileViewProps {
                   >
                     تفعيل إشعارات الجهاز
                   </button>
-                )}
+                )
+                }
               </div>
 
               {/* FCM External Push Card */}
@@ -347,8 +350,6 @@ interface ProfileViewProps {
                   </p>
                 </div>
 
-                {onOpenFCM && (
-              </div>
 
               {/* Native Mobile App (APK / iOS / GitHub) Card */}
               <div className="p-4 rounded-2xl bg-gradient-to-r from-emerald-950 via-teal-900 to-emerald-900 text-white shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -358,12 +359,8 @@ interface ProfileViewProps {
                   <p className="text-[11px] text-emerald-100/80">
                     بناء ملف APK حقيقي مع إشعارات FCM الخارجية، وتصدير المشروع بالكامل إلى مستودعك على GitHub مع بناء آلي.
                   </p>
+                  </span>
                 </div>
-
-                  <button
-                    type="button"
-                )}
-              </div>
 
               {/* Current Uncompleted Tasks Live Status Widget */}
               <div className={`p-4 rounded-2xl border ${
@@ -377,7 +374,8 @@ interface ProfileViewProps {
                       <AlertCircle className="w-4 h-4 text-amber-600" />
                     ) : (
                       <CheckCircle2 className="w-4 h-4 text-emerald-700" />
-                    )}
+                    )
+                    }
                     <span className="text-xs font-bold text-stone-900">
                       حالة مهامك وأورادك الحالية:
                     </span>
@@ -410,14 +408,16 @@ interface ProfileViewProps {
                         <span className="inline-flex items-center px-2 py-1 rounded-xl bg-amber-100 text-amber-900 text-[10px] font-bold">
                           +{uncompletedTasksList.length - 5} أخرى
                         </span>
-                      )}
+                      )
+                      }
                     </div>
                   </div>
                 ) : (
                   <p className="text-[11px] text-emerald-800 leading-relaxed">
                     ما شاء الله تبارك الله! جميع أورادك ومهامك مكتملة حالياً، ولن يتم إرسال إشعارات حتى تُعيّن لك مهام جديدة في الدورة.
                   </p>
-                )}
+                )
+                }
 
                 {/* Test Notification Button */}
                 <div className="pt-2 border-t border-stone-200/50 flex items-center justify-between">
@@ -435,7 +435,7 @@ interface ProfileViewProps {
                 </div>
               </div>
             </div>
-          )}
+          )
 
           {/* Save Button */}
           <div className="pt-3 flex justify-end border-t border-stone-100">
@@ -466,7 +466,8 @@ interface ProfileViewProps {
                   <span className="text-[10px] px-2 py-0.5 rounded-full bg-blue-50 text-blue-800 font-bold border border-blue-200">
                     {myDependents.length} تابع
                   </span>
-                )}
+                )
+                }
               </h3>
               <p className="text-xs text-stone-500">
                 تكليف ابنك أو أفراد عائلتك بأوراد ومتابعة إنجازهم معك وإبلاغ المجموعة.
@@ -482,7 +483,8 @@ interface ProfileViewProps {
               💡 <strong>كيف تتابع إنجازه؟</strong> تظهر مهام وأوراد ابنك مباشرة في صفحتك الرئيسية، ويمكنك فتح المصحف لقراءة ورده معه، وعند الضغط على «أتمّ {myDependents[0]?.displayName || 'ابنك'}» سيتم نشر الإنجاز في نشاط المجموعة فوراً مع التهنئة!
             </p>
           </div>
-        )}
+        )
+        }
       </div>
 
       {/* Badges Section */}
@@ -522,14 +524,16 @@ interface ProfileViewProps {
                     <h4 className="text-xs font-bold text-stone-900">{item.title}</h4>
                     {earned && (
                       <span className="text-[10px] text-amber-700 font-bold">✨ مكتسب</span>
-                    )}
+                    )
+                    }
                   </div>
                   <p className="text-[11px] text-stone-600 leading-normal">{item.desc}</p>
                   {earned && (
                     <span className="text-[10px] text-stone-400 block pt-1">
                       حصلت عليه: {formatDateInAden(earned.awardedAt)}
                     </span>
-                  )}
+                  )
+                  }
                 </div>
               </div>
             );
@@ -562,11 +566,13 @@ interface ProfileViewProps {
               </div>
             ))}
           </div>
-        )}
+        )
+        }
       </div>
 
         />
-      )}
+      )
+      }
 
     </div>
   );

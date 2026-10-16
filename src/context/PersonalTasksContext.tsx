@@ -104,11 +104,6 @@ export const PersonalTasksProvider: React.FC<{ children: React.ReactNode }> = ({
       setPersonalTasks(cached);
     }
 
-      // Demo mode: purely local
-      setLoadingPersonalTasks(false);
-      return;
-    }
-
     // Firestore listener for real users
     const colRef = collection(db, 'users', currentUser.uid, 'personalTasks');
     const q = query(colRef, orderBy('createdAt', 'desc'));
@@ -132,6 +127,7 @@ export const PersonalTasksProvider: React.FC<{ children: React.ReactNode }> = ({
     );
 
     return () => unsubscribe();
+  }, [currentUser])
 
   // Create personal task
   const createPersonalTask = async (input: CreatePersonalTaskInput): Promise<PersonalTask> => {

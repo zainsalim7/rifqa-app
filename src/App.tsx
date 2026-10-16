@@ -119,16 +119,9 @@ function MainLayout() {
         setCurrentTab={setCurrentTab}
         onOpenCreateGroup={() => setCreateGroupOpen(true)}
         onOpenJoinGroup={() => setJoinGroupOpen(true)}
-
       />
 
 
-
-              ✕
-            </button>
-          </div>
-        </div>
-      )}
 
       {/* Main Container */}
       <main className="flex-1 max-w-4xl w-full mx-auto p-4 md:p-6">
@@ -146,12 +139,7 @@ function MainLayout() {
               </p>
             </div>
 
-                className="w-full py-2.5 bg-white border border-stone-200 text-stone-700 rounded-2xl text-xs font-semibold hover:bg-stone-50 transition"
-              >
-                دليل الإعداد وحالة الربط
-              </button>
             </div>
-          </div>
         ) : (
           /* Signed In Views */
           <>
@@ -162,15 +150,16 @@ function MainLayout() {
                 onOpenCreateGroup={() => setCreateGroupOpen(true)}
                 onOpenJoinGroup={() => setJoinGroupOpen(true)}
                 onNavigateToPersonal={() => setCurrentTab('personal')}
-              />
+                />
             )}
 
             {currentTab === 'group' && (
               <GroupView
                 onOpenCreateTask={() => setCreateTaskOpen(true)}
                 onOpenJoinGroup={() => setJoinGroupOpen(true)}
-              />
-            )}
+            />
+            )
+            }
 
             {currentTab === 'personal' && (
               <PersonalProgramView />
@@ -181,10 +170,9 @@ function MainLayout() {
             )}
 
             {currentTab === 'profile' && (
-              <ProfileView 
-
-              />
-            )}
+              <ProfileView />
+              )
+              }
           </>
         )}
 
@@ -195,37 +183,40 @@ function MainLayout() {
         <BottomNav
           currentTab={currentTab}
           setCurrentTab={setCurrentTab}
-        />
-      )}
+      />
+      )
+      }
 
       {/* Modals & Dialogs */}
       {taskDetailTarget && (
         <TaskDetailModal
           task={taskDetailTarget}
           onClose={() => setTaskDetailTarget(null)}
-        />
-      )}
+      />
+      )
+      }
 
       {createTaskOpen && (
         <CreateTaskModal
           onClose={() => setCreateTaskOpen(false)}
-        />
-      )}
+      />
+      )
+      }
 
       {createGroupOpen && (
         <CreateGroupModal
           onClose={() => setCreateGroupOpen(false)}
-        />
-      )}
+      />
+      )
+      }
 
       {joinGroupOpen && (
         <JoinGroupModal
           onClose={() => setJoinGroupOpen(false)}
-        />
-      )}
+      />
+      )
+      }
 
-        />
-      )}
 
       {/* Global Quran Reader Modal for Group Tasks */}
       {activeQuranReader && (
@@ -249,8 +240,9 @@ function MainLayout() {
             await undoUnitCompleted(tId, cNum, uNum);
           }}
           onClose={closeQuranReader}
-        />
-      )}
+      />
+      )
+      }
 
       {/* Global Quran Reader Modal for Personal Private Khatmah */}
       {activePersonalReader && (
@@ -267,8 +259,9 @@ function MainLayout() {
             await togglePersonalUnit(tId, uNum);
           }}
           onClose={closePersonalQuranReader}
-        />
-      )}
+      />
+      )
+      }
 
     </div>
   );
