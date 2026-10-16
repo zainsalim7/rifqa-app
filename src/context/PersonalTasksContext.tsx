@@ -48,7 +48,7 @@ interface PersonalTasksContextType {
     completedToday: number;
     khatmahProgressPercent: number;
     highestStreak: number;
-  };
+}
 }
 
 const PersonalTasksContext = createContext<PersonalTasksContextType | null>(null);
@@ -157,8 +157,9 @@ export const PersonalTasksProvider: React.FC<{ children: React.ReactNode }> = ({
       completionHistory: [],
       createdAt: nowISO,
       updatedAt: nowISO,
-    };
+}
 
+  const createPersonalTask = async (input: CreatePersonalTaskInput): Promise<PersonalTask> => {
       const updated = [newTask, ...personalTasks];
       setPersonalTasks(updated);
       saveLocalTasks(updated);
@@ -177,7 +178,7 @@ export const PersonalTasksProvider: React.FC<{ children: React.ReactNode }> = ({
       saveLocalTasks(updated);
       return newTask;
     }
-  };
+}
 
   // Update personal task
   const updatePersonalTask = async (taskId: string, updates: Partial<PersonalTask>) => {
@@ -190,7 +191,6 @@ export const PersonalTasksProvider: React.FC<{ children: React.ReactNode }> = ({
       setPersonalTasks(updated);
       saveLocalTasks(updated);
       return;
-    }
 
     try {
       const docRef = doc(db, 'users', currentUser.uid, 'personalTasks', taskId);
@@ -201,7 +201,7 @@ export const PersonalTasksProvider: React.FC<{ children: React.ReactNode }> = ({
       setPersonalTasks(updated);
       saveLocalTasks(updated);
     }
-  };
+  }
 
   // Delete personal task
   const deletePersonalTask = async (taskId: string) => {
@@ -211,18 +211,17 @@ export const PersonalTasksProvider: React.FC<{ children: React.ReactNode }> = ({
       setPersonalTasks(updated);
       saveLocalTasks(updated);
       return;
-    }
 
     try {
       const docRef = doc(db, 'users', currentUser.uid, 'personalTasks', taskId);
-      await deleteDoc(docRef, );
+      await deleteDoc(docRef);
     } catch (err: any) {
       handleFirestoreError(err, OperationType.DELETE, `users/${currentUser.uid}/personalTasks/${taskId}`);
       const updated = personalTasks.filter(t => t.id !== taskId);
       setPersonalTasks(updated);
       saveLocalTasks(updated);
     }
-  };
+  }
 
   // Toggle Khatmah Unit (Juz 1..30)
   const togglePersonalUnit = async (taskId: string, unitNumber: number) => {
@@ -235,258 +234,33 @@ export const PersonalTasksProvider: React.FC<{ children: React.ReactNode }> = ({
     if (isNowCompleted) {
       currentUnits.add(unitNumber);
       // Confetti burst for accomplishing a Juz!
-      confetti({
-        particleCount: 45,
-        spread: 60,
-        origin: { y: 0.7 },
-        colors: ['#047857', '#10b981', '#fbbf24', '#f59e0b'],
-      });
-      if (task.reminderSoundEnabled ?? true) {
-        playNotificationChime();
       }
-    } else {
-      currentUnits.delete(unitNumber);
-    }
+  }
 
-    const updatedUnits = Array.from(currentUnits).sort((a, b) => a - b);
-    const allCompleted = updatedUnits.length === (task.totalUnits || 30);
-    const todayStr = new Date().toISOString().split('T')[0];
 
-    // If whole Khatmah finished
-    if (allCompleted && !task.isCompleted) {
-      confetti({
-        particleCount: 120,
-        spread: 100,
-        origin: { y: 0.5 },
-        colors: ['#10b981', '#f59e0b', '#3b82f6', '#ec4899', '#8b5cf6'],
-      });
-      showToast('مبارك! لقد ختمت القرآن الكريم في ختمتك الخاصة المباركة، تقبل الله منك ورزقك نوره وهداه 🌟📖', 'success');
-    }
-
-    const newHistory = [...(task.completionHistory || [])];
-    if (isNowCompleted) {
-      newHistory.push({
-        date: todayStr,
-        unitNumber,
-        timestamp: new Date().toISOString(),
-      });
-    }
-
-    await updatePersonalTask(taskId, {
-      completedUnits: updatedUnits,
-      currentCount: updatedUnits.length,
-      isCompleted: allCompleted,
-      completedAt: allCompleted ? new Date().toISOString() : undefined,
-      lastCompletedDate: isNowCompleted ? todayStr : task.lastCompletedDate,
-      completionHistory: newHistory.slice(-50), // keep recent 50 logs
-    });
+  const value = {
+    personalTasks,
+    loadingPersonalTasks,
+    createPersonalTask,
+    updatePersonalTask,
+    deletePersonalTask,
+    togglePersonalUnit,
+    incrementDhikr,
+    resetDhikr,
+    markCompletedToday,
+    testPersonalReminder,
+    activePersonalReader,
+    openPersonalQuranReader,
+    closePersonalQuranReader,
+    stats,
   };
-
-  // Increment Dhikr counter
-  const incrementDhikr = async (taskId: string, step = 1) => {
-    const task = personalTasks.find(t => t.id === taskId);
-    if (!task) return;
-
-    // Haptic vibration feedback if supported
-    if (typeof navigator !== 'undefined' && navigator.vibrate) {
-      navigator.vibrate(15);
-    }
-
-    const target = task.targetCount || 100;
-    const newCount = (task.currentCount || 0) + step;
-    const justReachedTarget = newCount >= target && (task.currentCount || 0) < target;
-
-    if (justReachedTarget) {
-      confetti({
-        particleCount: 60,
-        spread: 70,
-        origin: { y: 0.6 },
-        colors: ['#059669', '#10b981', '#f59e0b'],
-      });
-      playNotificationChime();
-      showToast(`ما شاء الله! بلغت الهدف المبارك لـ "${task.title}" (${target}) تقبل الله طاعتك 📿✨`, 'success');
-    }
-
-    const todayStr = new Date().toISOString().split('T')[0];
-    await updatePersonalTask(taskId, {
-      currentCount: newCount,
-      isCompleted: newCount >= target,
-      lastCompletedDate: todayStr,
-      streakDays: justReachedTarget ? (task.streakDays || 0) + 1 : (task.streakDays || 0),
-    });
-  };
-
-  // Reset Dhikr count
-  const resetDhikr = async (taskId: string) => {
-    await updatePersonalTask(taskId, {
-      currentCount: 0,
-      isCompleted: false,
-    });
-    showToast('تم تصفير عداد الورد للبدء من جديد', 'info');
-  };
-
-  // Mark task completed today (for wird/custom)
-  const markCompletedToday = async (taskId: string, notes?: string) => {
-    const task = personalTasks.find(t => t.id === taskId);
-    if (!task) return;
-
-    const todayStr = new Date().toISOString().split('T')[0];
-    const isAlreadyDoneToday = task.lastCompletedDate === todayStr;
-
-    confetti({
-      particleCount: 50,
-      spread: 60,
-      origin: { y: 0.65 },
-      colors: ['#059669', '#34d399', '#f59e0b'],
-    });
-    if (task.reminderSoundEnabled ?? true) {
-      playNotificationChime();
-    }
-
-    const newStreak = isAlreadyDoneToday ? (task.streakDays || 1) : ((task.streakDays || 0) + 1);
-
-    const history = [...(task.completionHistory || [])];
-    history.push({
-      date: todayStr,
-      notes: notes || undefined,
-      timestamp: new Date().toISOString(),
-    });
-
-    await updatePersonalTask(taskId, {
-      lastCompletedDate: todayStr,
-      isCompleted: true,
-      streakDays: newStreak,
-      completionHistory: history.slice(-50),
-    });
-
-    showToast(`هنيئاً لك! أتممت "${task.title}" اليوم بنجاح 🌿 تقبل الله منك`, 'success');
-  };
-
-  // Test personal task reminder
-  const testPersonalReminder = async (task: PersonalTask) => {
-    const sound = task.reminderSoundEnabled ?? true;
-    let detail = '';
-    if (task.category === 'khatmah') {
-      const doneCount = task.completedUnits?.length || 0;
-      detail = `متبقٍ ${30 - doneCount} أجزاء لإتمام الختمة`;
-    } else if (task.category === 'dhikr') {
-      detail = `الهدف: ${task.targetCount || 100} ذكر`;
-    } else if (task.targetTime) {
-      detail = `الوقت المحدد: ${task.targetTime}`;
-    }
-
-    const sent = sendPersonalTaskReminderNotification({
-      title: task.title,
-      category: task.category,
-      detail,
-      playSound: sound,
-    });
-
-    if (sent) {
-      showToast(`تم إرسال إشعار تذكير تجريبي لـ "${task.title}" بنجاح 🔔`, 'success');
-    } else {
-      if (sound) playNotificationChime();
-      showToast(`تنبيه تجريبي لـ "${task.title}": حان وقت إنجاز برنامجك الخاص ✨ (يمكنك تفعيل إشعارات المتصفح للمزيد من التنبيهات)`, 'info');
-    }
-  };
-
-  // Open & Close personal Quran reader
-  const openPersonalQuranReader = useCallback((juzNumber: number, personalTaskId: string) => {
-    const task = personalTasks.find(t => t.id === personalTaskId);
-    const isCompleted = task?.completedUnits?.includes(juzNumber) || false;
-    setActivePersonalReader({
-      juzNumber,
-      personalTaskId,
-      isCompleted,
-    });
-  }, [personalTasks]);
-
-  const closePersonalQuranReader = useCallback(() => {
-    setActivePersonalReader(null);
-  }, []);
-
-  // Periodic reminder checker (checks every 30 seconds for scheduled times)
-  useEffect(() => {
-    const checkScheduledReminders = () => {
-      if (personalTasks.length === 0) return;
-
-      const now = new Date();
-      const currentHours = now.getHours().toString().padStart(2, '0');
-      const currentMinutes = now.getMinutes().toString().padStart(2, '0');
-      const currentHHMM = `${currentHours}:${currentMinutes}`;
-      const todayStr = now.toISOString().split('T')[0];
-
-      personalTasks.forEach(task => {
-        if (!task.reminderEnabled) return;
-        const taskReminderTime = task.reminderTime || '06:00';
-
-        if (taskReminderTime === currentHHMM) {
-          const notifyKey = `${task.id}_${todayStr}_${taskReminderTime}`;
-          if (!lastNotifiedMap[notifyKey]) {
-            // Send reminder
-            sendPersonalTaskReminderNotification({
-              title: task.title,
-              category: task.category,
-              detail: task.category === 'khatmah' ? 'تذكير ورد التلاوة اليومي' : undefined,
-              playSound: task.reminderSoundEnabled ?? true,
-            });
-
-            setLastNotifiedMap(prev => ({ ...prev, [notifyKey]: todayStr }));
-            showToast(`تذكير خاص: حان موعد وردك الخاص "${task.title}" 🔔`, 'info');
-          }
-        }
-      });
-    };
-
-    checkScheduledReminders();
-    const interval = setInterval(checkScheduledReminders, 30000);
-    return () => clearInterval(interval);
-  }, [personalTasks, lastNotifiedMap, showToast]);
-
-  // Calculated overall statistics
-  const stats = useMemo(() => {
-    const totalActive = personalTasks.filter(t => !t.isCompleted || t.frequency === 'daily').length;
-    const todayStr = new Date().toISOString().split('T')[0];
-    const completedToday = personalTasks.filter(t => t.lastCompletedDate === todayStr).length;
-
-    const khatmahTask = personalTasks.find(t => t.category === 'khatmah' && !t.isCompleted);
-    const khatmahProgressPercent = khatmahTask
-      ? Math.round(((khatmahTask.completedUnits?.length || 0) / (khatmahTask.totalUnits || 30)) * 100)
-      : 0;
-
-    const highestStreak = personalTasks.reduce((max, t) => Math.max(max, t.streakDays || 0), 0);
-
-    return {
-      totalActive,
-      completedToday,
-      khatmahProgressPercent,
-      highestStreak,
-    };
-  }, [personalTasks]);
 
   return (
-    <PersonalTasksContext.Provider
-      value={{
-        personalTasks,
-        loadingPersonalTasks,
-        createPersonalTask,
-        updatePersonalTask,
-        deletePersonalTask,
-        togglePersonalUnit,
-        incrementDhikr,
-        resetDhikr,
-        markCompletedToday,
-        testPersonalReminder,
-        activePersonalReader,
-        openPersonalQuranReader,
-        closePersonalQuranReader,
-        stats,
-      }}
-    >
+    <PersonalTasksContext.Provider value={value}>
       {children}
     </PersonalTasksContext.Provider>
   );
-};
+}
 
 export const usePersonalTasks = () => {
   const context = useContext(PersonalTasksContext);
@@ -494,4 +268,4 @@ export const usePersonalTasks = () => {
     throw new Error('usePersonalTasks must be used within a PersonalTasksProvider');
   }
   return context;
-};
+}

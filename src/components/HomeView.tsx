@@ -187,9 +187,9 @@ export const HomeView: React.FC<HomeViewProps> = ({
                 <span>أو ابدأ برنامجك وختمتك الخاصة الفردية (سرّي دون مجموعة) 🔒</span>
               </button>
             </div>
-    );
-        </div>
-  }
+        )
+    }
+  </div>
 
   return (
     <div className="space-y-6 pb-20">
@@ -223,6 +223,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
               <p className="text-emerald-200/90 text-xs md:text-sm mt-1 max-w-xl leading-relaxed">
                 {currentGroup.description}
               </p>
+            )}
           </div>
 
           {/* Quick Group Stat Bar */}

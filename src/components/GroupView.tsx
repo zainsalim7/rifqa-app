@@ -472,8 +472,7 @@ export const GroupView: React.FC<GroupViewProps> = ({
             <span>حذف المجموعة</span>
           </button>
         </div>
-      )
-      }
+      )}
 
       {/* In-App Confirmation Modal */}
       {confirmDialog && (
@@ -499,9 +498,6 @@ export const GroupView: React.FC<GroupViewProps> = ({
             </div>
           </div>
         </div>
-      )
-      }
+      )}
 
     </div>
-  );
-};

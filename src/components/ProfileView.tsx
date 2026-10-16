@@ -483,8 +483,6 @@ interface ProfileViewProps {
               💡 <strong>كيف تتابع إنجازه؟</strong> تظهر مهام وأوراد ابنك مباشرة في صفحتك الرئيسية، ويمكنك فتح المصحف لقراءة ورده معه، وعند الضغط على «أتمّ {myDependents[0]?.displayName || 'ابنك'}» سيتم نشر الإنجاز في نشاط المجموعة فوراً مع التهنئة!
             </p>
           </div>
-        )
-        }
       </div>
 
       {/* Badges Section */}
@@ -569,8 +567,6 @@ interface ProfileViewProps {
         )
         }
       </div>
-
-        />
       )
       }
 
