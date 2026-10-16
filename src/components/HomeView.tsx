@@ -215,7 +215,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
                 <Plus className="w-3.5 h-3.5" />
                 <span>إضافة مهمة</span>
               </button>
-          )</div>
+          )}
 
           <div>
             <h2 className="text-xl md:text-2xl font-bold text-emerald-50">{currentGroup.name}</h2>

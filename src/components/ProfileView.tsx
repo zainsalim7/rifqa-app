@@ -565,10 +565,7 @@ interface ProfileViewProps {
             ))}
           </div>
         )
-        }
-      </div>
-      )
-
+      }
     </div>
   );
-};
+}
